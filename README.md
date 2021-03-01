@@ -3,6 +3,8 @@
 中文：万,亿,兆,京...  
 支持负数丶小数丶科学计数法(尽量多用单位做计算，不要写太多位数)， 可以修改__tostring的默认保留位数    
 
+如果需要保存到数据库， 请写入 unitIndex(int) 和 valueNum(double)
+
 test:  
 require("bigint")    
 
