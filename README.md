@@ -10,8 +10,8 @@ local a = bn("100aa")
 local b = bn("10b")    
 
 local value = nil  
-value = a*b  
-print("a*b", value)  
+value = a\*b  
+print("a\*b", value)  
 value = a/b  
 print("a/b", value)  
 value = a+b  
