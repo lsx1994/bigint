@@ -62,21 +62,26 @@ _setMode(MODE.EN)
 	@desc: 创建
 	--@value: 值： 123 "123" "123aa" "123万" (超出的部分自动换算幂)
 ]]
-function bigint.new(value)
+function bigint.new(value, value2)
     local set = {}
     set.unitIndex = 0
     set.valueNum = 0
     set._isbigint = true
-    local t = type(value)
-    if t == "number" then
-        set.valueNum = value
-    elseif t == "string" then
-        bigint.StrToBn(set, value)
-    elseif t == "table" and value._isbigint then
-        set.unitIndex = value.unitIndex
-        set.valueNum = value.valueNum
+    if value and value2 then
+        set.unitIndex = value
+        set.valueNum = value2
     else
-        ERROR("bigint.new type error.", value, t)
+        local t = type(value)
+        if t == "number" then
+            set.valueNum = value
+        elseif t == "string" then
+            bigint.StrToBn(set, value)
+        elseif t == "table" and value._isbigint then
+            set.unitIndex = value.unitIndex
+            set.valueNum = value.valueNum
+        else
+            ERROR("bigint.new type error.", value, t)
+        end
     end
     bigint._Trim(set)
     setmetatable(set, bigint_ops)
@@ -237,6 +242,15 @@ function bigint.StrToBn(obj, strValue)
     end
 end
 
+function bigint.pack(obj)
+    return obj.valueNum.."|"..obj.unitIndex
+end
+
+function bigint.unpack(str)
+    local t = string.split(str, "|", true)
+    return bigint.new(t[1], t[2])
+end
+
 --[[
 	@desc: 统一对象类型
 	--@a:
@@ -388,6 +402,29 @@ end
 function bigint_ops.__unm(a)
     a.valueNum = -a.valueNum
     return a
+end
+
+function bigint_ops.__eq(a, b)
+    a,b = bigint_ops._UnifiedType(a, b)
+    return a.unitIndex == b.unitIndex and a.valueNum - b.valueNum <= 0.0000000001
+end
+
+function bigint_ops.__lt(a, b)
+    a,b = bigint_ops._UnifiedType(a, b)
+    if a.unitIndex == b.unitIndex then
+        return a.valueNum < b.valueNum
+    else
+        return a.unitIndex < b.unitIndex
+    end
+end
+
+function bigint_ops.__le(a, b)
+    a,b = bigint_ops._UnifiedType(a, b)
+    if a.unitIndex == b.unitIndex then
+        return a.valueNum <= b.valueNum
+    else
+        return a.unitIndex <= b.unitIndex
+    end
 end
 
 --[[
