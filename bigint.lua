@@ -406,7 +406,7 @@ end
 
 function bigint_ops.__eq(a, b)
     a,b = bigint_ops._UnifiedType(a, b)
-    return a.unitIndex == b.unitIndex and a.valueNum - b.valueNum <= 0.0000000001
+    return a.unitIndex == b.unitIndex and a.valueNum == b.valueNum
 end
 
 function bigint_ops.__lt(a, b)
@@ -423,7 +423,7 @@ function bigint_ops.__le(a, b)
     if a.unitIndex == b.unitIndex then
         return a.valueNum <= b.valueNum
     else
-        return a.unitIndex <= b.unitIndex
+        return a.unitIndex < b.unitIndex
     end
 end
 
